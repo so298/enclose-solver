@@ -1,5 +1,6 @@
 tmp/
 solve2
+emsdk/
 
 # Python-generated files
 __pycache__/

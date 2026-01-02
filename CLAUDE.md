@@ -42,6 +42,18 @@ python screenshot_to_ascii.py --clipboard
 clang++ -O2 -std=c++17 -o solve2 solve2.cpp
 ```
 
+### Web Application
+```bash
+# Compile WASM (requires emsdk)
+source emsdk/emsdk_env.sh
+em++ -O2 -std=c++17 -s WASM=1 -s MODULARIZE=1 -s EXPORT_NAME="SolveModule" \
+  -s ALLOW_MEMORY_GROWTH=1 --bind -o web/wasm/solve2.js solve2_wasm.cpp
+
+# Start local server
+python -m http.server 8000 --directory web
+# Open http://localhost:8000
+```
+
 ## Architecture
 
 ### Core Algorithm (solve2.py, solve2.cpp)
@@ -56,6 +68,13 @@ clang++ -O2 -std=c++17 -o solve2 solve2.cpp
 - Auto mode: detects grid lines using edge detection and peak finding
 - Manual mode: uniform grid splitting with specified rows/cols
 - Tile classification by color analysis: grass (.), water (#), horse (H)
+
+### Web Application (web/)
+- **solver.hpp**: Header-only library shared between native and WASM builds
+- **solve2_wasm.cpp**: Embind bindings for WASM export
+- **web/lib/image-to-ascii.js**: JavaScript port of screenshot converter
+- **web/workers/**: Web Workers for background execution (solver, image processing)
+- **web/wasm/**: Compiled WASM module (solve2.js, solve2.wasm)
 
 ### Grid Format
 ```

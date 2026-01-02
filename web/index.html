@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enclose Solver</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Enclose Solver</h1>
+        <p class="subtitle">Horse enclosure puzzle solver - <a href="https://enclose.horse/" target="_blank">enclose.horse</a></p>
+
+        <!-- Image Input Section -->
+        <section class="section">
+            <h2>1. Image Input</h2>
+            <div class="input-controls">
+                <button id="pasteBtn" class="btn btn-primary">Paste from Clipboard</button>
+                <span class="or">or</span>
+                <label class="btn btn-secondary">
+                    Upload File
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                </label>
+            </div>
+            <div id="imagePreview" class="image-preview">
+                <span class="placeholder">Paste or upload an image</span>
+            </div>
+            <div id="imageSource" class="image-source"></div>
+        </section>
+
+        <!-- Conversion Options Section -->
+        <section class="section">
+            <h2>2. Convert to ASCII</h2>
+            <p class="tip">Tip: If auto detection doesn't work well, switch to Manual mode and specify the grid size (rows/cols).</p>
+            <div class="options-grid">
+                <div class="option-group">
+                    <label>Mode:</label>
+                    <select id="modeSelect">
+                        <option value="auto">Auto Detect</option>
+                        <option value="manual">Manual Grid Size</option>
+                    </select>
+                </div>
+                <div class="option-group manual-only" style="display: none;">
+                    <label>Rows:</label>
+                    <input type="number" id="rowsInput" value="15" min="1" max="100">
+                </div>
+                <div class="option-group manual-only" style="display: none;">
+                    <label>Cols:</label>
+                    <input type="number" id="colsInput" value="15" min="1" max="100">
+                </div>
+                <div class="option-group">
+                    <label>Crop (L,T,R,B):</label>
+                    <input type="text" id="cropInput" placeholder="0,0,0,0" value="">
+                </div>
+            </div>
+            <button id="convertBtn" class="btn btn-primary" disabled>Convert to ASCII</button>
+            <div id="convertStatus" class="status"></div>
+        </section>
+
+        <!-- ASCII Grid Section -->
+        <section class="section">
+            <h2>3. ASCII Grid</h2>
+            <div class="tab-container">
+                <div class="tabs">
+                    <button class="tab" data-tab="ascii">ASCII</button>
+                    <button class="tab active" data-tab="visual">Visual</button>
+                </div>
+                <div class="tab-content hidden" id="asciiTab">
+                    <textarea id="gridTextarea" placeholder="ASCII grid will appear here...
+You can also edit it manually.
+
+Legend:
+  . = grass (walkable)
+  # = water (blocked)
+  H = horse"></textarea>
+                </div>
+                <div class="tab-content" id="visualTab">
+                    <div class="grid-legend input-legend">
+                        <span class="legend-item"><span class="legend-color cell-horse"></span> H: Horse</span>
+                        <span class="legend-item"><span class="legend-color cell-grass"></span> .: Grass</span>
+                        <span class="legend-item"><span class="legend-color cell-water"></span> #: Water</span>
+                    </div>
+                    <div id="inputGridVisual" class="grid-visual"></div>
+                </div>
+            </div>
+            <div class="grid-info">
+                <span id="gridInfo"></span>
+            </div>
+        </section>
+
+        <!-- Solver Section -->
+        <section class="section">
+            <h2>4. Solve</h2>
+            <div class="solver-controls">
+                <div class="option-group">
+                    <label>Number of walls (k):</label>
+                    <input type="number" id="kInput" value="8" min="1" max="20">
+                </div>
+                <button id="solveBtn" class="btn btn-primary">Solve</button>
+            </div>
+            <div id="solveStatus" class="status"></div>
+        </section>
+
+        <!-- Result Section -->
+        <section class="section" id="resultSection" style="display: none;">
+            <h2>5. Result</h2>
+            <div class="result-info">
+                <p><strong>Enclosed Area:</strong> <span id="resultArea">-</span></p>
+                <p><strong>Wall Positions:</strong> <span id="resultWalls">-</span></p>
+                <p><strong>Time:</strong> <span id="resultTime">-</span></p>
+            </div>
+            <div class="result-grid">
+                <h3>Solved Grid</h3>
+                <div class="grid-legend">
+                    <span class="legend-item"><span class="legend-color cell-horse"></span> H: Horse</span>
+                    <span class="legend-item"><span class="legend-color cell-enclosed"></span> &amp;: Enclosed</span>
+                    <span class="legend-item"><span class="legend-color cell-grass"></span> .: Grass</span>
+                    <span class="legend-item"><span class="legend-color cell-water"></span> #: Water</span>
+                    <span class="legend-item"><span class="legend-color cell-wall"></span> X: Wall</span>
+                </div>
+                <div id="resultGridVisual" class="grid-visual"></div>
+            </div>
+        </section>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

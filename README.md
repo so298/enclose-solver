@@ -4,6 +4,8 @@ A solver for [enclose.horse](https://enclose.horse/) puzzles.
 
 Given a grid with a horse, grass, and water tiles, this solver finds the optimal wall placements to maximize the enclosed area while preventing the horse from escaping to the boundary.
 
+**Try it online: https://so298.github.io/enclose-solver/**
+
 ## Features
 
 - **Web Application**: Browser-based solver with visual grid display

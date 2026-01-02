@@ -1,6 +1,7 @@
 import sys
 from collections import deque
 import argparse
+import time
 
 
 class FlowTemplate:
@@ -316,6 +317,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-k", type=int, default=6, help="Number of walls available")
 
+    t_start = time.time()
     lines = [line.rstrip("\n") for line in sys.stdin]
     while lines and lines[-1] == "":
         lines.pop()
@@ -328,6 +330,8 @@ def main():
         return
 
     ans, walls = solve(k, grid)
+    t_end = time.time()
+    print(f"Time taken: {t_end - t_start:.3f} seconds")
     print_ans(ans, walls, grid)
 
 

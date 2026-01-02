@@ -24,7 +24,7 @@ import argparse
 from typing import List, Tuple, Optional
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageGrab
 
 
 INF = 10**9
@@ -50,7 +50,9 @@ def parse_crop(s: str) -> Tuple[float, float, float, float]:
     return vals  # type: ignore
 
 
-def apply_crop(img: Image.Image, crop: Tuple[float, float, float, float]) -> Image.Image:
+def apply_crop(
+    img: Image.Image, crop: Tuple[float, float, float, float]
+) -> Image.Image:
     w, h = img.size
     l, t, r, b = crop
     x0 = int(round(w * l))
@@ -95,7 +97,9 @@ def find_line_centers(
     return centers
 
 
-def detect_grid_lines(rgb: np.ndarray, min_line_percentile: float) -> Tuple[List[int], List[int]]:
+def detect_grid_lines(
+    rgb: np.ndarray, min_line_percentile: float
+) -> Tuple[List[int], List[int]]:
     gray = (
         0.299 * rgb[..., 0].astype(np.float32)
         + 0.587 * rgb[..., 1].astype(np.float32)
@@ -191,14 +195,53 @@ def screenshot_to_ascii(
     return out, xlines, ylines
 
 
+def read_image_from_clipboard() -> Image.Image:
+    img = ImageGrab.grabclipboard()
+    if img is None:
+        raise RuntimeError("クリップボードに画像がありません")
+    elif isinstance(img, list):
+        # macOS sometimes returns file paths
+        if len(img) > 0:
+            img = Image.open(img[0])
+        else:
+            raise RuntimeError("クリップボードに画像がありません")
+    elif not isinstance(img, Image.Image):
+        raise RuntimeError("クリップボードの内容が画像ではありません")
+    return img
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("image", help="Path to screenshot PNG/JPG")
-    ap.add_argument("--out", default="", help="Write ASCII grid to this file (optional)")
+    ap.add_argument(
+        "image",
+        nargs="?",
+        default=None,
+        help="Path to screenshot PNG/JPG (optional if --clipboard is used)",
+    )
+    ap.add_argument(
+        "--clipboard",
+        action="store_true",
+        help="Get image from clipboard instead of file",
+    )
+    ap.add_argument(
+        "--out", default="", help="Write ASCII grid to this file (optional)"
+    )
 
     # manual mode
-    ap.add_argument("--rows", type=int, default=None, help="Manual grid rows (enables uniform split)")
-    ap.add_argument("--cols", type=int, default=None, help="Manual grid cols (enables uniform split)")
+    ap.add_argument(
+        "--rows",
+        "-r",
+        type=int,
+        default=None,
+        help="Manual grid rows (enables uniform split)",
+    )
+    ap.add_argument(
+        "--cols",
+        "-c",
+        type=int,
+        default=None,
+        help="Manual grid cols (enables uniform split)",
+    )
     ap.add_argument(
         "--crop",
         type=str,
@@ -220,10 +263,22 @@ def main():
         default=0.18,
         help="Crop ratio per tile to ignore borders (0.10..0.25)",
     )
-    ap.add_argument("--print-info", action="store_true", help="Print detected size/lines info")
+    ap.add_argument(
+        "--print-info", action="store_true", help="Print detected size/lines info"
+    )
     args = ap.parse_args()
 
-    img = Image.open(args.image)
+    # Get image from clipboard or file
+    if args.clipboard:
+        img = read_image_from_clipboard()
+    elif args.image:
+        img = Image.open(args.image)
+    else:
+        print(
+            "エラー: 画像ファイルを指定するか、--clipboard オプションを使用してください"
+        )
+        return
+
     if args.crop:
         img = apply_crop(img, parse_crop(args.crop))
 

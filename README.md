@@ -43,17 +43,7 @@ python -m http.server 8000 --directory web
 
 ## CLI Usage
 
-### Python Solver
-
-```bash
-# Install dependencies
-uv sync
-
-# Run solver
-python solve2.py -k 6 < input.txt
-```
-
-### C++ Solver (faster)
+### C++ Solver
 
 ```bash
 # Compile
@@ -107,7 +97,6 @@ The algorithm is optimal for small k values (k ≤ 10-20).
 .
 ├── solver.hpp           # Header-only core solver library
 ├── solve2.cpp           # Native CLI solver
-├── solve2.py            # Python CLI solver
 ├── solve2_wasm.cpp      # WASM bindings
 ├── screenshot_to_ascii.py  # Image to ASCII converter
 └── web/

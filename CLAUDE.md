@@ -8,17 +8,9 @@ This is a graph algorithm solver for the "horse enclosure" puzzle: given a grid 
 
 ## Commands
 
-### Setup
-```bash
-uv sync  # Install Python dependencies
-```
-
 ### Running the Solver
 ```bash
-# Python solver
-python solve2.py -k 6 < input.txt
-
-# C++ solver (faster, pre-compiled binary exists)
+# C++ solver
 ./solve2 -k 6 < input.txt
 ```
 
@@ -56,7 +48,7 @@ python -m http.server 8000 --directory web
 
 ## Architecture
 
-### Core Algorithm (solve2.py, solve2.cpp)
+### Core Algorithm (solver.hpp, solve2.cpp)
 - **Vertex-cut minimum separator problem** solved via max-flow (Ford-Fulkerson with BFS)
 - **Split graph construction**: vertices split into in/out nodes to convert vertex cuts to edge cuts
 - **DFS with pruning**: explores wall placement combinations with memoization
